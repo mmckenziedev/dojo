@@ -453,7 +453,7 @@ export function setMarginBox( /*DomNode*/ node, /*Object*/ box, /*Object*/ compu
 // Positioning
 // =============================
 
-export function isBodyLtr( /*Document?*/ doc) {
+export function isBodyLtr( /*Document?*/ doc?) {
     // summary:
     //		Returns true if the current language is left-to-right, and false otherwise.
     // doc: Document?
@@ -464,7 +464,7 @@ export function isBodyLtr( /*Document?*/ doc) {
     return (win.body(doc).dir || doc.documentElement.dir || "ltr").toLowerCase() == "ltr"; // Boolean
 };
 
-export function docScroll( /*Document?*/ doc) {
+export function docScroll( /*Document?*/ doc?) {
     // summary:
     //		Returns an object with {node, x, y} with corresponding offsets.
     // doc: Document?
@@ -483,7 +483,7 @@ export function docScroll( /*Document?*/ doc) {
         };
 };
 
-export function getIeDocumentElementOffset( /*Document?*/ doc) {
+export function getIeDocumentElementOffset( /*Document?*/ doc?) {
     // summary:
     //		Deprecated method previously used for IE6-IE7.  Now, just returns `{x:0, y:0}`.
     return {
@@ -492,7 +492,7 @@ export function getIeDocumentElementOffset( /*Document?*/ doc) {
     };
 };
 
-export function fixIeBiDiScrollLeft( /*Integer*/ scrollLeft, /*Document?*/ doc) {
+export function fixIeBiDiScrollLeft( /*Integer*/ scrollLeft, /*Document?*/ doc?) {
     // summary:
     //		In RTL direction, scrollLeft should be a negative value, but IE
     //		returns a positive one. All codes using documentElement.scrollLeft
@@ -522,7 +522,7 @@ export function fixIeBiDiScrollLeft( /*Integer*/ scrollLeft, /*Document?*/ doc) 
     return scrollLeft; // Integer
 };
 
-export function position( /*DomNode*/ node, /*Boolean?*/ includeScroll) {
+export function position( /*DomNode*/ node, /*Boolean?*/ includeScroll?) {
     // summary:
     //		Gets the position and size of the passed element relative to
     //		the viewport (if includeScroll==false), or relative to the
