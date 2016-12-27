@@ -22,7 +22,8 @@ import win = require("./_base/window");
 // by testing nodeType, ecause 'document' is the 'parentNode' of 'body'
 // it is frequently sent to this function even
 // though it is not Element.
-var getComputedStyle, style = {
+export let getComputedStyle;
+var style = {
     // summary:
     //		This module defines the core dojo DOM style API.
 };
@@ -53,7 +54,7 @@ if (has("webkit")) {
             w.getComputedStyle(node, null) : {};
     };
 }
-style.getComputedStyle = getComputedStyle;
+
 /*=====
 style.getComputedStyle = function(node){
 	// summary:
@@ -91,7 +92,7 @@ style.getComputedStyle = function(node){
 };
 =====*/
 
-var toPixel;
+let toPixel;
 if (!has("ie")) {
     toPixel = function(element, value) {
         // style values can be floats, client code may want
@@ -133,7 +134,8 @@ if (!has("ie")) {
         return avalue;
     };
 }
-style.toPixelValue = toPixel;
+
+export let toPixelValue = toPixel;
 /*=====
 style.toPixelValue = function(node, value){
 	// summary:
@@ -147,7 +149,7 @@ style.toPixelValue = function(node, value){
 // FIXME: there opacity quirks on FF that we haven't ported over. Hrm.
 
 var astr = "DXImageTransform.Microsoft.Alpha";
-var af = function(n, f) {
+var af = function(n, f?) {
     try {
         return n.filters.item(astr);
     } catch (e) {
@@ -250,7 +252,7 @@ var _floatAliases = {
 
 // public API
 
-style.get = function getStyle( /*DOMNode|String*/ node, /*String?*/ name) {
+export let get = function getStyle( /*DOMNode|String*/ node, /*String?*/ name) {
     // summary:
     //		Accesses styles on a node.
     // description:
@@ -285,11 +287,11 @@ style.get = function getStyle( /*DOMNode|String*/ node, /*String?*/ name) {
         return _getOpacity(n);
     }
     name = _floatAliases[name] ? "cssFloat" in n.style ? "cssFloat" : "styleFloat" : name;
-    var s = style.getComputedStyle(n);
+    var s = getComputedStyle(n);
     return (l == 1) ? s : _toStyleValue(n, name, s[name] || n.style[name]); /* CSS2Properties||String||Number */
 };
 
-style.set = function setStyle( /*DOMNode|String*/ node, /*String|Object*/ name, /*String?*/ value) {
+export let set = function setStyle( /*DOMNode|String*/ node, /*String|Object*/ name, /*String?*/ value) {
     // summary:
     //		Sets styles on a node.
     // node: DOMNode|String
@@ -352,9 +354,7 @@ style.set = function setStyle( /*DOMNode|String*/ node, /*String|Object*/ name, 
         return op ? _setOpacity(n, value) : n.style[name] = value; // Number
     }
     for (var x in name) {
-        style.set(node, x, name[x]);
+        set(node, x, name[x]);
     }
-    return style.getComputedStyle(n);
+    return getComputedStyle(n);
 };
-
-export = style;

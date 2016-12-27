@@ -18,7 +18,7 @@ var geom = {
 // can be either:
 //	"border-box"
 //	"content-box" (default)
-geom.boxModel = "content-box";
+export let boxModel = "content-box";
 
 // We punt per-node box mode testing completely.
 // If anybody cares, we can provide an additional (optional) unit
@@ -31,10 +31,10 @@ geom.boxModel = "content-box";
 
 if (has("ie") /*|| has("opera")*/ ) {
     // client code may have to adjust if compatMode varies across iframes
-    geom.boxModel = document.compatMode == "BackCompat" ? "border-box" : "content-box";
+    boxModel = document.compatMode == "BackCompat" ? "border-box" : "content-box";
 }
 
-geom.getPadExtents = function getPadExtents( /*DomNode*/ node, /*Object*/ computedStyle) {
+export function getPadExtents( /*DomNode*/ node, /*Object*/ computedStyle) {
     // summary:
     //		Returns object with special values specifically useful for node
     //		fitting.
@@ -75,7 +75,7 @@ geom.getPadExtents = function getPadExtents( /*DomNode*/ node, /*Object*/ comput
 
 var none = "none";
 
-geom.getBorderExtents = function getBorderExtents( /*DomNode*/ node, /*Object*/ computedStyle) {
+export function getBorderExtents( /*DomNode*/ node, /*Object*/ computedStyle) {
     // summary:
     //		returns an object with properties useful for noting the border
     //		dimensions.
@@ -113,7 +113,7 @@ geom.getBorderExtents = function getBorderExtents( /*DomNode*/ node, /*Object*/ 
     };
 };
 
-geom.getPadBorderExtents = function getPadBorderExtents( /*DomNode*/ node, /*Object*/ computedStyle) {
+export function getPadBorderExtents( /*DomNode*/ node, /*Object*/ computedStyle) {
     // summary:
     //		Returns object with properties useful for box fitting with
     //		regards to padding.
@@ -136,8 +136,8 @@ geom.getPadBorderExtents = function getPadBorderExtents( /*DomNode*/ node, /*Obj
 
     node = dom.byId(node);
     var s = computedStyle || style.getComputedStyle(node),
-        p = geom.getPadExtents(node, s),
-        b = geom.getBorderExtents(node, s);
+        p = getPadExtents(node, s),
+        b = getBorderExtents(node, s);
     return {
         l: p.l + b.l,
         t: p.t + b.t,
@@ -148,7 +148,7 @@ geom.getPadBorderExtents = function getPadBorderExtents( /*DomNode*/ node, /*Obj
     };
 };
 
-geom.getMarginExtents = function getMarginExtents(node, computedStyle) {
+export function getMarginExtents(node, computedStyle) {
     // summary:
     //		returns object with properties useful for box fitting with
     //		regards to box margins (i.e., the outer-box).
@@ -201,7 +201,7 @@ geom.getMarginExtents = function getMarginExtents(node, computedStyle) {
 // 2. factoring the shared code wastes cycles (function call overhead)
 // 3. duplicating the shared code wastes bytes
 
-geom.getMarginBox = function getMarginBox( /*DomNode*/ node, /*Object*/ computedStyle) {
+export function getMarginBox( /*DomNode*/ node, /*Object*/ computedStyle) {
     // summary:
     //		returns an object that encodes the width, height, left and top
     //		positions of the node's margin box.
@@ -216,7 +216,7 @@ geom.getMarginBox = function getMarginBox( /*DomNode*/ node, /*Object*/ computed
 
     node = dom.byId(node);
     var s = computedStyle || style.getComputedStyle(node),
-        me = geom.getMarginExtents(node, s),
+        me = getMarginExtents(node, s),
         l = node.offsetLeft - me.l,
         t = node.offsetTop - me.t,
         p = node.parentNode,
@@ -239,7 +239,7 @@ geom.getMarginBox = function getMarginBox( /*DomNode*/ node, /*Object*/ computed
     };
 };
 
-geom.getContentBox = function getContentBox(node, computedStyle) {
+export function getContentBox(node, computedStyle) {
     // summary:
     //		Returns an object that encodes the width, height, left and top
     //		positions of the node's content box, irrespective of the
@@ -259,8 +259,8 @@ geom.getContentBox = function getContentBox(node, computedStyle) {
     var s = computedStyle || style.getComputedStyle(node),
         w = node.clientWidth,
         h,
-        pe = geom.getPadExtents(node, s),
-        be = geom.getBorderExtents(node, s),
+        pe = getPadExtents(node, s),
+        be = getBorderExtents(node, s),
         l = node.offsetLeft + pe.l + be.l,
         t = node.offsetTop + pe.t + be.t;
     if (!w) {
@@ -307,7 +307,7 @@ geom.getContentBox = function getContentBox(node, computedStyle) {
 // In particular, margins on TABLE do not seems to appear
 // at all in computedStyle on Mozilla.
 
-function setBox( /*DomNode*/ node, /*Number?*/ l, /*Number?*/ t, /*Number?*/ w, /*Number?*/ h, /*String?*/ u) {
+function setBox( /*DomNode*/ node, /*Number?*/ l?, /*Number?*/ t?, /*Number?*/ w?, /*Number?*/ h?, /*String?*/ u?) {
     // summary:
     //		sets width/height/left/top in the current (native) box-model
     //		dimensions. Uses the unit passed in u.
@@ -358,10 +358,10 @@ function usesBorderBox( /*DomNode*/ node) {
     // If you have assigned a different box to either one via CSS then
     // box functions will break.
 
-    return geom.boxModel == "border-box" || node.tagName.toLowerCase() == "table" || isButtonTag(node); // boolean
+    return boxModel == "border-box" || node.tagName.toLowerCase() == "table" || isButtonTag(node); // boolean
 }
 
-geom.setContentSize = function setContentSize( /*DomNode*/ node, /*Object*/ box, /*Object*/ computedStyle) {
+export function setContentSize( /*DomNode*/ node, /*Object*/ box, /*Object*/ computedStyle) {
     // summary:
     //		Sets the size of the node's contents, irrespective of margins,
     //		padding, or borders.
@@ -381,7 +381,7 @@ geom.setContentSize = function setContentSize( /*DomNode*/ node, /*Object*/ box,
     var w = box.w,
         h = box.h;
     if (usesBorderBox(node)) {
-        var pb = geom.getPadBorderExtents(node, computedStyle);
+        var pb = getPadBorderExtents(node, computedStyle);
         if (w >= 0) {
             w += pb.w;
         }
@@ -399,7 +399,7 @@ var nilExtents = {
     h: 0
 };
 
-geom.setMarginBox = function setMarginBox( /*DomNode*/ node, /*Object*/ box, /*Object*/ computedStyle) {
+export function setMarginBox( /*DomNode*/ node, /*Object*/ box, /*Object*/ computedStyle) {
     // summary:
     //		sets the size of the node's margin box and placement
     //		(left/top), irrespective of box model. Think of it as a
@@ -424,8 +424,8 @@ geom.setMarginBox = function setMarginBox( /*DomNode*/ node, /*Object*/ box, /*O
         // Some elements have special padding, margin, and box-model settings.
         // To use box functions you may need to set padding, margin explicitly.
         // Controlling box-model is harder, in a pinch you might set dojo/dom-geometry.boxModel.
-        pb = usesBorderBox(node) ? nilExtents : geom.getPadBorderExtents(node, s),
-        mb = geom.getMarginExtents(node, s);
+        pb = usesBorderBox(node) ? nilExtents : getPadBorderExtents(node, s),
+        mb = getMarginExtents(node, s);
     if (has("webkit")) {
         // on Safari (3.1.2), button nodes with no explicit size have a default margin
         // setting an explicit size eliminates the margin.
@@ -453,7 +453,7 @@ geom.setMarginBox = function setMarginBox( /*DomNode*/ node, /*Object*/ box, /*O
 // Positioning
 // =============================
 
-geom.isBodyLtr = function isBodyLtr( /*Document?*/ doc) {
+export function isBodyLtr( /*Document?*/ doc) {
     // summary:
     //		Returns true if the current language is left-to-right, and false otherwise.
     // doc: Document?
@@ -464,7 +464,7 @@ geom.isBodyLtr = function isBodyLtr( /*Document?*/ doc) {
     return (win.body(doc).dir || doc.documentElement.dir || "ltr").toLowerCase() == "ltr"; // Boolean
 };
 
-geom.docScroll = function docScroll( /*Document?*/ doc) {
+export function docScroll( /*Document?*/ doc) {
     // summary:
     //		Returns an object with {node, x, y} with corresponding offsets.
     // doc: Document?
@@ -478,12 +478,12 @@ geom.docScroll = function docScroll( /*Document?*/ doc) {
             y: node.pageYOffset
         } :
         (node = has("quirks") ? win.body(doc) : doc.documentElement) && {
-            x: geom.fixIeBiDiScrollLeft(node.scrollLeft || 0, doc),
+            x: fixIeBiDiScrollLeft(node.scrollLeft || 0, doc),
             y: node.scrollTop || 0
         };
 };
 
-geom.getIeDocumentElementOffset = function( /*Document?*/ doc) {
+export function getIeDocumentElementOffset( /*Document?*/ doc) {
     // summary:
     //		Deprecated method previously used for IE6-IE7.  Now, just returns `{x:0, y:0}`.
     return {
@@ -492,7 +492,7 @@ geom.getIeDocumentElementOffset = function( /*Document?*/ doc) {
     };
 };
 
-geom.fixIeBiDiScrollLeft = function fixIeBiDiScrollLeft( /*Integer*/ scrollLeft, /*Document?*/ doc) {
+export function fixIeBiDiScrollLeft( /*Integer*/ scrollLeft, /*Document?*/ doc) {
     // summary:
     //		In RTL direction, scrollLeft should be a negative value, but IE
     //		returns a positive one. All codes using documentElement.scrollLeft
@@ -510,7 +510,7 @@ geom.fixIeBiDiScrollLeft = function fixIeBiDiScrollLeft( /*Integer*/ scrollLeft,
 
     doc = doc || win.doc;
     var ie = has("ie");
-    if (ie && !geom.isBodyLtr(doc)) {
+    if (ie && !isBodyLtr(doc)) {
         var qk = has("quirks"),
             de = qk ? win.body(doc) : doc.documentElement,
             pwin = win.global; // TODO: use winUtils.get(doc) after resolving circular dependency b/w dom-geometry.js and dojo/window.js
@@ -522,7 +522,7 @@ geom.fixIeBiDiScrollLeft = function fixIeBiDiScrollLeft( /*Integer*/ scrollLeft,
     return scrollLeft; // Integer
 };
 
-geom.position = function( /*DomNode*/ node, /*Boolean?*/ includeScroll) {
+export function position( /*DomNode*/ node, /*Boolean?*/ includeScroll) {
     // summary:
     //		Gets the position and size of the passed element relative to
     //		the viewport (if includeScroll==false), or relative to the
@@ -560,7 +560,7 @@ geom.position = function( /*DomNode*/ node, /*Boolean?*/ includeScroll) {
     // if offsetParent is used, ret value already includes scroll position
     // so we may have to actually remove that value if !includeScroll
     if (includeScroll) {
-        var scroll = geom.docScroll(node.ownerDocument);
+        var scroll = docScroll(node.ownerDocument);
         ret.x += scroll.x;
         ret.y += scroll.y;
     }
@@ -570,7 +570,7 @@ geom.position = function( /*DomNode*/ node, /*Boolean?*/ includeScroll) {
 
 // random "private" functions wildly used throughout the toolkit
 
-geom.getMarginSize = function getMarginSize( /*DomNode*/ node, /*Object*/ computedStyle) {
+export function getMarginSize( /*DomNode*/ node, /*Object*/ computedStyle) {
     // summary:
     //		returns an object that encodes the width and height of
     //		the node's margin box
@@ -584,7 +584,7 @@ geom.getMarginSize = function getMarginSize( /*DomNode*/ node, /*Object*/ comput
     //		object of dojo/dom-style.getComputedStyle().
 
     node = dom.byId(node);
-    var me = geom.getMarginExtents(node, computedStyle || style.getComputedStyle(node));
+    var me = getMarginExtents(node, computedStyle || style.getComputedStyle(node));
     var size = node.getBoundingClientRect();
     return {
         w: (size.right - size.left) + me.w,
@@ -592,7 +592,7 @@ geom.getMarginSize = function getMarginSize( /*DomNode*/ node, /*Object*/ comput
     };
 };
 
-geom.normalizeEvent = function(event) {
+export function normalizeEvent(event) {
     // summary:
     //		Normalizes the geometry of a DOM event, normalizing the pageX, pageY,
     //		offsetX, offsetY, layerX, and layerX properties
@@ -611,11 +611,7 @@ geom.normalizeEvent = function(event) {
         // DO NOT replace the following to use dojo/_base/window.body(), in IE, document.documentElement should be used
         // here rather than document.body
         var docBody = has("quirks") ? doc.body : doc.documentElement;
-        event.pageX = event.clientX + geom.fixIeBiDiScrollLeft(docBody.scrollLeft || 0, doc);
+        event.pageX = event.clientX + fixIeBiDiScrollLeft(docBody.scrollLeft || 0, doc);
         event.pageY = event.clientY + (docBody.scrollTop || 0);
     }
 };
-
-// TODO: evaluate separate getters/setters for position and sizes?
-
-export = geom;

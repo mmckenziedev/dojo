@@ -23,9 +23,9 @@ var dom = {
     // summary:
     //		This module defines the core dojo DOM API.
 };
-
+export let byId: (id, doc?) => HTMLElement | undefined;
 if (has("ie")) {
-    dom.byId = function(id, doc) {
+    byId = function (id, doc) {
         if (typeof id != "string") {
             return id;
         }
@@ -50,7 +50,7 @@ if (has("ie")) {
         }
     };
 } else {
-    dom.byId = function(id, doc) {
+    byId = function (id, doc) {
         // inline'd type check.
         // be sure to return null per documentation, to match IE branch.
         return ((typeof id == "string") ? (doc || win.doc).getElementById(id) : id) || null; // DOMNode
@@ -100,12 +100,12 @@ if (has("ie")) {
 
 var doc = kernel.global["document"] || null;
 has.add("dom-contains", !!(doc && doc.contains));
-dom.isDescendant = has("dom-contains") ?
+export let isDescendant = has("dom-contains") ?
     // FF9+, IE9+, webkit, opera, iOS, Android, Edge, etc.
-    function( /*DOMNode|String*/ node, /*DOMNode|String*/ ancestor) {
-        return !!((ancestor = dom.byId(ancestor)) && ancestor.contains(dom.byId(node)));
+    function ( /*DOMNode|String*/ node, /*DOMNode|String*/ ancestor) {
+        return !!((ancestor = byId(ancestor)) && ancestor.contains(byId(node)));
     } :
-    function( /*DOMNode|String*/ node, /*DOMNode|String*/ ancestor) {
+    function ( /*DOMNode|String*/ node, /*DOMNode|String*/ ancestor) {
         // summary:
         //		Returns true if node is a descendant of ancestor
         // node: DOMNode|String
@@ -120,8 +120,8 @@ dom.isDescendant = has("dom-contains") ?
         //	|	});
 
         try {
-            node = dom.byId(node);
-            ancestor = dom.byId(ancestor);
+            node = byId(node);
+            ancestor = byId(ancestor);
             while (node) {
                 if (node == ancestor) {
                     return true; // Boolean
@@ -141,7 +141,7 @@ dom.isDescendant = has("dom-contains") ?
 // as the unselectable attribute on elements; namely, dijit Editor buttons
 // do not properly prevent the content of the editable content frame from
 // unblurring. As a result, the -ms- prefixed version is omitted here.
-has.add("css-user-select", function(global, doc, element) {
+has.add("css-user-select", function (global, doc, element) {
     // Avoid exception when dom.js is loaded in non-browser environments
     if (!element) {
         return false;
@@ -188,11 +188,11 @@ dom.setSelectable = function(node, selectable){
 =====*/
 
 var cssUserSelect = has("css-user-select");
-dom.setSelectable = cssUserSelect ? function(node, selectable) {
+export let setSelectable = cssUserSelect ? function (node, selectable) {
     // css-user-select returns a (possibly vendor-prefixed) CSS property name
-    dom.byId(node).style[cssUserSelect] = selectable ? "" : "none";
-} : function(node, selectable) {
-    node = dom.byId(node);
+    byId(node).style[cssUserSelect] = selectable ? "" : "none";
+} : function (node, selectable) {
+    node = byId(node);
 
     // (IE < 10 / Opera) Fall back to setting/removing the
     // unselectable attribute on the element and all its children
@@ -211,5 +211,3 @@ dom.setSelectable = cssUserSelect ? function(node, selectable) {
         }
     }
 };
-
-export = dom;
