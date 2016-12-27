@@ -19,7 +19,7 @@ function buildFn(fn) {
 
 function everyOrSome(some) {
     const every = !some;
-    return function(a, fn, o) {
+    return function (a, fn, o?) {
         let i = 0;
         const l = a && a.length || 0;
         let result;
@@ -53,7 +53,7 @@ function index(up) {
     if (!up) {
         delta = lOver = uOver = -1;
     }
-    return function(a, x, from, last) {
+    return function (a, x, from, last) {
         if (last && delta > 0) {
             // TODO: why do we use a non-standard signature? why do we need "last"?
             return array.lastIndexOf(a, x, from);
@@ -169,7 +169,7 @@ var array = {
     },
     =====*/
 
-    lastIndexOf: index(false),
+    lastIndexOf: index(false) as <T>(arr: T[], value: T, fromIndex?: number) => number,
     /*=====
     lastIndexOf: function(arr, value, fromIndex){
     	// summary:
@@ -191,7 +191,7 @@ var array = {
     },
     =====*/
 
-    forEach(arr, callback, thisObject) {
+    forEach(arr, callback, thisObject?) {
         // summary:
         //		for every item in arr, callback is invoked. Return values are ignored.
         //		If you want to break out of the loop, consider using array.every() or array.some().
@@ -266,7 +266,7 @@ var array = {
         }
     },
 
-    map(arr, callback, thisObject, Ctr) {
+    map(arr, callback, thisObject?, Ctr?) {
         // summary:
         //		applies callback to each element of arr and returns
         //		an Array with the results
@@ -293,7 +293,7 @@ var array = {
         let i = 0;
 
         const l = arr && arr.length || 0;
-        const out = new(Ctr || Array)(l);
+        const out = new (Ctr || Array)(l);
         if (l && typeof arr == "string") arr = arr.split("");
         if (typeof callback == "string") callback = cache[callback] || buildFn(callback);
         if (thisObject) {

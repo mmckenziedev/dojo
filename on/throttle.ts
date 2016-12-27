@@ -5,7 +5,7 @@ import on from '../on';
 // module:
 //		dojo/on/throttle
 
-export = function(selector, delay) {
+export = function (selector: string, delay: number) {
     // summary:
     //		event parser for custom events
     // selector: String
@@ -13,7 +13,7 @@ export = function(selector, delay) {
     // delay: Interger
     //		The amount of ms before testing the selector
 
-    return function(node, listenerFnc) {
+    return function (node, listenerFnc: Function) {
         return on(node, selector, throttle(listenerFnc, delay));
     };
 };
