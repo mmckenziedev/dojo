@@ -34,7 +34,7 @@ var ret = {
     },
     =====*/
 
-    body: function( /*Document?*/ doc) {
+    body: function( /*Document?*/ doc?) {
         // summary:
         //		Return the body element of the specified document or of dojo/_base/window::doc.
         // example:
@@ -61,9 +61,9 @@ var ret = {
         /*Function*/
         callback,
         /*Object?*/
-        thisObject,
+        thisObject?,
         /*Array?*/
-        cbArguments) {
+        cbArguments?) {
         // summary:
         //		Invoke callback with globalObject as dojo.global and
         //		globalObject.document as dojo.doc.
@@ -87,9 +87,9 @@ var ret = {
         /*Function*/
         callback,
         /*Object?*/
-        thisObject,
+        thisObject?,
         /*Array?*/
-        cbArguments) {
+        cbArguments?) {
         // summary:
         //		Invoke callback with documentObject as dojo/_base/window::doc.
         // description:

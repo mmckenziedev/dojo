@@ -8,6 +8,43 @@ import config = require("./config");
 
 // This module is the foundational module of the dojo boot sequence; it defines the dojo object.
 
+interface Kernel {
+	config: /*Config*/any;
+	global: any;
+	dijit: any;
+	dojox: any;
+
+	/**
+	 * a map from a name used in a legacy module to the (global variable name, object addressed by that name)
+	 * always map dojo, dijit, and dojox
+	 */
+	scopeMap: {
+		[scope: string]: [string, any];
+		dojo: [string, Kernel];
+		dijit: [string, any];
+		dojox: [string, any];
+	};
+
+	baseUrl: string;
+	isAsync: boolean;
+	locale: string;
+	version: {
+		major: number;
+		minor: number;
+		patch: number;
+		flag: string;
+		revision: number;
+		toString(): string;
+	};
+
+	eval(scriptText: string): any;
+	exit(exitcode?: number): void;
+	deprecated(behaviour: string, extra?: string, removal?: string): void;
+	experimental(moduleName: string, extra?: string): void;
+	moduleUrl(module: string, url?: string): any;
+	_hasResource: any;
+}
+
 let i;
 
 let p;
@@ -28,7 +65,7 @@ const dojo = {
 	global: global,
 	dijit: dijit,
 	dojox: dojox
-};
+} as Kernel;
 
 // Configure the scope map. For a 100% AMD application, the scope map is not needed other than to provide
 // a _scopeName property for the dojo, dijit, and dojox root object so those packages can create
@@ -76,7 +113,7 @@ for (p in scopeMap) {
 		global[item[0]] = item[1];
 	}
 }
-dojo.scopeMap = scopeMap;
+dojo.scopeMap = scopeMap as any;
 
 /*===== dojo.__docParserConfigureScopeMap(scopeMap); =====*/
 
@@ -104,7 +141,7 @@ dojo.version = {
 		const v = dojo.version;
 		return `${v.major}.${v.minor}.${v.patch}${v.flag} (${v.revision})`;	// String
 	}
-};
+} as any;
 
 // If has("extend-dojo") is truthy, then as a dojo module is defined it should push it's definitions
 // into the dojo object, and conversely. In 2.0, it will likely be unusual to augment another object
