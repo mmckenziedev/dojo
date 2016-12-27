@@ -1,6 +1,7 @@
-define(["../has", "require"], function(has, require){
-	// module:
-	//		dojo/_base/config
+import has from "../has";
+import require from "require";
+// module:
+//		dojo/_base/config
 
 /*=====
 return {
@@ -148,38 +149,40 @@ return {
 };
 =====*/
 
-	var result = {};
-	if(has("dojo-config-api")){
-		// must be the dojo loader; take a shallow copy of require.rawConfig
-		var src = require.rawConfig, p;
-		for(p in src){
-			result[p] = src[p];
-		}
-	}else{
-		var adviseHas = function(featureSet, prefix, booting){
-			for(p in featureSet){
-				p!="has" && has.add(prefix + p, featureSet[p], 0, booting);
-			}
-		};
-		var global = (function () { return this; })();
-		result = has("dojo-loader") ?
-			// must be a built version of the dojo loader; all config stuffed in require.rawConfig
-			require.rawConfig :
-			// a foreign loader
-			global.dojoConfig || global.djConfig || {};
-		adviseHas(result, "config", 1);
-		adviseHas(result.has, "", 1);
-	}
+var result = {};
+if (has("dojo-config-api")) {
+    // must be the dojo loader; take a shallow copy of require.rawConfig
+    var src = require.rawConfig,
+        p;
+    for (p in src) {
+        result[p] = src[p];
+    }
+} else {
+    var adviseHas = function(featureSet, prefix, booting) {
+        for (p in featureSet) {
+            p != "has" && has.add(prefix + p, featureSet[p], 0, booting);
+        }
+    };
+    var global = (function() {
+        return this;
+    })();
+    result = has("dojo-loader") ?
+        // must be a built version of the dojo loader; all config stuffed in require.rawConfig
+        require.rawConfig :
+        // a foreign loader
+        global.dojoConfig || global.djConfig || {};
+    adviseHas(result, "config", 1);
+    adviseHas(result.has, "", 1);
+}
 
-	if(!result.locale && typeof navigator != "undefined"){
-		// Default locale for browsers (ensure it's read from user-settings not download locale).
-		var language = (navigator.languages && navigator.languages.length) ? navigator.languages[0] :
-			(navigator.language || navigator.userLanguage);
-		if(language){
-			result.locale = language.toLowerCase();
-		}
-	}
+if (!result.locale && typeof navigator != "undefined") {
+    // Default locale for browsers (ensure it's read from user-settings not download locale).
+    var language = (navigator.languages && navigator.languages.length) ? navigator.languages[0] :
+        (navigator.language || navigator.userLanguage);
+    if (language) {
+        result.locale = language.toLowerCase();
+    }
+}
 
-	return result;
-});
+export default result;
 

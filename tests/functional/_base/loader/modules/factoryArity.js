@@ -1,8 +1,7 @@
-define(function (require, exports, module) {
-	var impliedDep = require('./impliedDep1');
-	return {
-		module: module,
-		id: 'factoryArity',
-		impliedDep: impliedDep.id
-	};
-});
+import $____impliedDep_ from './impliedDep1';
+var impliedDep = $____impliedDep_;
+export default {
+    module: module,
+    id: 'factoryArity',
+    impliedDep: impliedDep.id
+};

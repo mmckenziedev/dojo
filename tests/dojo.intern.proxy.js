@@ -1,7 +1,4 @@
-define([
-	'./dojo.intern'
-], function (config) {
-	config.excludeInstrumentation = /^.*/;
+import config from './dojo.intern';
+config.excludeInstrumentation = /^.*/;
 
-	return config;
-});
+export default config;

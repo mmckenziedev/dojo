@@ -1,7 +1,6 @@
-define(["module"], function (module) {
-	return {
-		getConfig: function () {
-			return module.config();
-		}
-	};
-});
+import module from "module";
+export default {
+    getConfig: function() {
+        return module.config();
+    }
+};

@@ -1,3 +1,2 @@
-define([ './declareStepsOnProvide' ], function (result) {
-	return result;
-});
+import result from './declareStepsOnProvide';
+export default result;

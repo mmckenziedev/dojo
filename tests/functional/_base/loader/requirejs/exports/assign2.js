@@ -1,4 +1,4 @@
-define(['module', 'exports', 'require'],
-	function (module, exports, require) {
-		module.exports = 'assign2';
-	});
+import module from 'module';
+import exports from 'exports';
+import require from 'require';
+module.exports = 'assign2';

@@ -1,3 +1,3 @@
-define([], function(){
-  return {status:"ok"};
-});
+export default {
+    status: "ok"
+};

@@ -1,3 +1,2 @@
-define(['i18n!nls/colors'], function (colors) {
-	return colors.red;
-});
+import colors from 'i18n!nls/colors';
+export default colors.red;

@@ -1,28 +1,26 @@
 if(require.has){
 	require.has.add("config-selectorEngine", "acme");
 }
-define([
-	"../ready",
-	"./kernel",
-	"./connect", // until we decide if connect is going back into non-browser environments
-	"./unload",
-	"./window",
-	"./event",
-	"./html",
-	"./NodeList",
-	"../query",
-	"./xhr",
-	"./fx"], function(dojo){
+import dojo from "../ready";
+import "./kernel";
+import "./connect";
+import "./unload";
+import "./window";
+import "./event";
+import "./html";
+import "./NodeList";
+import "../query";
+import "./xhr";
+import "./fx";
 
-	// module:
-	//		dojo/_base/browser
+// module:
+//		dojo/_base/browser
 
-	/*=====
-	return {
-		// summary:
-		//		This module causes the browser-only base modules to be loaded.
-	};
-	=====*/
+/*=====
+return {
+	// summary:
+	//		This module causes the browser-only base modules to be loaded.
+};
+=====*/
 
-	return dojo;
-});
+export default dojo;

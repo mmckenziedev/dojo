@@ -1,3 +1,2 @@
-require([ 'uno' ], function (uno) {
-	this.uno = uno;
-});
+import uno from 'uno';
+this.uno = uno;

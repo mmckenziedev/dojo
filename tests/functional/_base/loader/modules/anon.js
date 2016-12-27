@@ -1,6 +1,6 @@
-define([ '../a', './wrapped' ], function (a, wrapped) {
-	return {
-		theAnswer: a.number,
-		five: wrapped.five
-	};
-});
+import a from '../a';
+import wrapped from './wrapped';
+export default {
+    theAnswer: a.number,
+    five: wrapped.five
+};

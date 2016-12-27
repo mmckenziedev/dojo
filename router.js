@@ -1,9 +1,7 @@
-define([
-	"./router/RouterBase"
-], function(RouterBase){
+import RouterBase from "./router/RouterBase";
 
-	// module:
-	//		dojo/router
+// module:
+//		dojo/router
 
 /*=====
 return {
@@ -24,5 +22,4 @@ return {
 };
 =====*/
 
-	return new RouterBase({});
-});
+export default new RouterBase({});
