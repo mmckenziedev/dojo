@@ -151,30 +151,26 @@ return {
 type ColorValue = [number, number, number];
 type ColorValueAlpha = [number, number, number, number];
 
-interface HasCache {
-	[feature: string]: any;
-}
-
 interface Config {
+	addOnLoad: () => void | [any, string];
+	baseUrl: string;
+	callback: (...args: any[]) => void;
+	defaultDuration: number;
+	deferredInstrumentation: boolean;
+	deps: () => string[] | string[];
+	dojoBlankHtmlUrl: string;
+	extraLocale: string[];
+	hasCache: typeof has.cache;
+	ioPublish: boolean;
 	isDebug: boolean;
 	locale: string;
-	extraLocale: string[];
-	baseUrl: string;
 	modulePaths: { [mid: string]: string };
-	addOnLoad: () => void | [any, string];
+	noGlobals?: boolean;
 	parseOnLoad: boolean;
 	require: string[];
-	defaultDuration: number;
-	dojoBlankHtmlUrl: string;
-	ioPublish: boolean;
-	useCustomLogger: any;
 	transparentColor: ColorValue | ColorValueAlpha;
-	deps: () => string[] | string[];
-	hasCache: HasCache;
-	callback: (...args: any[]) => void;
-	deferredInstrumentation: boolean;
+	useCustomLogger: any;
 	useDeferredInstrumentation: string | boolean | number;
-	noGlobals?: boolean;
 }
 
 let result = {} as Config;

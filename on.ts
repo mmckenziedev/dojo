@@ -27,7 +27,7 @@ interface On {
     (target: Element | GenericObject, type: string | ExtensionEvent, listener: EventListener, dontFix?: boolean): Handle;
     pausable(target: Element | GenericObject, type: string | ExtensionEvent, listener: EventListener, dontFix?: boolean): Handle;
     once(target: Element | GenericObject, type: string | ExtensionEvent, listener: EventListener, dontFix?: boolean): Handle;
-    parse(target: Element | GenericObject, type: string | ExtensionEvent, listener: EventListener, dontFix: boolean, matchesTarget: Element | GenericObject): Handle;
+	parse(target: Element | GenericObject, type: string | ExtensionEvent, listener: EventListener, addListener?, dontFix?: boolean, matchesTarget?: Element | GenericObject): Handle;
     matches(node: Element, selector: string, context: Element, children: boolean, matchesTarget?: MatchesTarget): Element | boolean;
     selector(selector: string, type: string | ExtensionEvent, children?: boolean): ExtensionEvent;
     emit(target: Element | GenericObject, type: string | ExtensionEvent, event?: any): boolean;

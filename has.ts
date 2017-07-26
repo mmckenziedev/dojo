@@ -16,7 +16,69 @@ import module = require("module");
 // try to pull the has implementation from the loader; both the dojo loader and bdLoad provide one
 // if using a foreign loader, then the has cache may be initialized via the config object for this module
 // WARNING: if a foreign loader defines require.has to be something other than the has.js API, then this implementation fail
-var has = require.has || function() {};
+
+declare const load: any;
+declare const process: any;
+declare const Packages: any;
+
+interface HasCache {
+	[feature: string]: any;
+}
+
+interface HasTestFunction {
+	/* TypeScript has no way of referring to the global scope see Microsoft/TypeScript#983 */
+	(global?: any, doc?: Document, element?: Element): any;
+}
+
+interface Has {
+	/**
+	 * Return the current value of the named feature.
+	 * @param {string | number} name The name (if a string) or identifier (if an integer) of the feature to test.
+	 */
+	(name: string | number): any;
+	(name: 'dojo-dom-ready-api'): 1;
+	(name: 'dojo-sniff'): 1;
+	(name: 'dom'): boolean;
+	(name: 'host-browser'): boolean;
+	(name: 'host-node'): any;
+	(name: 'host-rhino'): boolean;
+	// if host-browser is true
+	(name: 'MSPointer'): void | boolean;
+	(name: 'device-width'): void | number;
+	(name: 'dom-addeventlistener'): void | boolean;
+	(name: 'dom-attributes-explicit'): void | boolean;
+	(name: 'dom-attributes-specified-flag'): void | boolean;
+	(name: 'pointer-events'): void | boolean;
+	(name: 'touch'): void | boolean;
+	(name: 'touch-events'): void | boolean;
+	// dojo/_base/browser
+	(name: 'config-selectorEngine'): string;
+
+	cache: HasCache;
+
+	/**
+	 * Register a new feature test for some named feature.
+	 */
+	add(name: string | number, test: HasTestFunction, now?: boolean | 0 | 1, force?: boolean): any;
+	add<T extends (object | string | number | boolean | null | void)>(name: string | number, test: T, now?: boolean, force?: boolean): any;
+
+	/**
+	 * Deletes the contents of the element passed to test functions.
+	 */
+	clearElement<T extends HTMLElement>(element: T): T;
+
+	/**
+	 * Resolves id into a module id based on possibly-nested tenary expression that branches on has feature test value(s).
+	 */
+	normalize(id: string, toAbsMid: Function): string; /* TODO: Align with loader api */
+
+	/**
+	 * Conditional loading of AMD modules based on a has feature test value.
+	 */
+	load(id: string, parentRequire: Function, loaded: Function): void; /* TODO: Align with loader api */
+}
+
+var has: Has = require.has || function() {};
 if (!has("dojo-has-api")) {
     var
         isBrowser =
@@ -46,7 +108,7 @@ if (!has("dojo-has-api")) {
         //		previously added to the cache by has.add.
 
         return typeof cache[name] == "function" ? (cache[name] = cache[name](global, doc, element)) : cache[name]; // Boolean
-    };
+    } as Has;
 
     has.cache = cache;
 
@@ -137,7 +199,7 @@ has.clearElement = function(element) {
     return element;
 };
 
-has.normalize = function(id, toAbsMid) {
+has.normalize = function(id: string, toAbsMid) {
     // summary:
     //	 Resolves id into a module id based on possibly-nested tenary expression that branches on has feature test value(s).
     //
@@ -146,7 +208,7 @@ has.normalize = function(id, toAbsMid) {
     var
         tokens = id.match(/[\?:]|[^:\?]*/g),
         i = 0,
-        get = function(skip) {
+        get = function(skip?) {
             var term = tokens[i++];
             if (term == ":") {
                 // empty string module name, resolves to 0
@@ -189,4 +251,4 @@ has.load = function(id, parentRequire, loaded) {
     }
 };
 
-export = has;
+export = has as Has;

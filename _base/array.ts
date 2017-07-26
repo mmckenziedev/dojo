@@ -2,16 +2,18 @@ import dojo = require("./kernel");
 import has = require("../has");
 import lang = require("./lang");
 
+type IteratorFunction<T extends any> = (item: T, index?: number, array?: T[]) => T;
+
 // module:
 //		dojo/_base/array
 
 // our old simple function builder stuff
-let cache = {};
+let cache: {[fn: string]: IteratorFunction<any>} = {};
 
 let u;
 
-function buildFn(fn) {
-    return cache[fn] = new Function("item", "index", "array", fn); // Function
+function buildFn<T extends any>(fn: string) : IteratorFunction<T> {
+    return cache[fn] = new Function("item", "index", "array", fn) as IteratorFunction<T>; // Function
 }
 // magic snippet: if(typeof fn == "string") fn = cache[fn] || buildFn(fn);
 
@@ -308,7 +310,7 @@ var array = {
         return out; // Array
     },
 
-    filter(arr, callback, thisObject) {
+    filter<T>(arr: T[], callback: IteratorFunction<T> | string, thisObject?: object): T[] {
         // summary:
         //		Returns a new Array with those items from arr that match the
         //		condition implemented by callback.

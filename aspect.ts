@@ -4,10 +4,40 @@
 
 var undefined;
 
-function advise(dispatcher, type, advice, receiveArguments) {
-    var previous = dispatcher[type];
+/*
+	export function after(target: any, methodName: string, advice: Function): core.IHandle;
+	export function around(target: any, methodName: string, advice: (previous: Function) => Function): core.IHandle;
+	export function before(target: any, methodName: string, advice: Function): core.IHandle;
+	export function on(target: any, methodName: string, advice: Function): core.IHandle;
+
+*/
+
+type AdviceFunction = (target: Target, args?: IArguments | any[]) => any;
+type Target = any;
+interface AspectHandle {
+	advice: AdviceFunction;
+	id?: number;
+	previous?: AspectHandle;
+	next?: AspectHandle;
+	receiveArguments?: boolean;
+	remove(): void;
+}
+
+interface Dispatcher {
+	(): void;
+	after?: AspectHandle;
+	around?: {
+		advice: AdviceFunction;
+	};
+	before?: AspectHandle;
+	nextId?: number;
+	target?: Target;
+}
+
+function advise(dispatcher: Dispatcher, type: string, advice: AdviceFunction, receiveArguments?: boolean) {
+    var previous: AspectHandle = dispatcher[type];
     var around = type == "around";
-    var signal;
+    var signal: AspectHandle;
     if (around) {
         var advised = advice(function() {
             return previous.advice(this, arguments);
@@ -73,10 +103,10 @@ function advise(dispatcher, type, advice, receiveArguments) {
     return signal;
 }
 
-function aspect(type) {
-    return function(target, methodName, advice, receiveArguments) {
+function aspect(type: string) {
+    return function(target: Target, methodName: string, advice: AdviceFunction, receiveArguments?: boolean) {
         var existing = target[methodName],
-            dispatcher;
+            dispatcher: Dispatcher;
         if (!existing || existing.target != target) {
             // no dispatcher in place
             target[methodName] = dispatcher = function() {
